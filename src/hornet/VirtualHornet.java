@@ -145,4 +145,9 @@ public class VirtualHornet {
         }
     }
 
+    public void L_newLidar(float yaw, float distance, float pitch)
+    {
+       // _navigation.newLidar(yaw, distance, pitch);     //Pass the newly received Lidar data to the UI to be drawn
+    }
+
 }

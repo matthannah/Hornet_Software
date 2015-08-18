@@ -11,6 +11,7 @@ public class CONFIG {
         {
             public static final byte CONNECTION_REQUEST = 'a';
             public static final byte ACCGYRO = 1;
+            public static final byte LIDAR = 'l'; //Setting l as the identification byte for a LIDAR data packet
         }
 
         public class USBSerial

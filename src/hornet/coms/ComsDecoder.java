@@ -101,6 +101,10 @@ class Consumer extends Thread {
         {
             return; //@TODO replace with throw
         }
+
+        byte[] filteredByteArray;   //created here instead of inside a case statement
+        float[] converted;          //so that they can be used by all case statements
+
         switch (message[0])
         {
             case CONFIG.Coms.PacketCodes.CONNECTION_REQUEST:
@@ -111,11 +115,25 @@ class Consumer extends Thread {
                 {
                     break;  //@TODO add error handling here
                 }
-                byte[] filteredByteArray = removeCode(message);
-                float[] converted = toFloatArray(filteredByteArray);
+                filteredByteArray = removeCode(message);
+                converted = toFloatArray(filteredByteArray);
                 float[] acc = Arrays.copyOfRange(converted, 0, 3);
                 float[] gyro = Arrays.copyOfRange(converted, 3, 6);
                 _virtualHornet.C_accGyro(acc,gyro);
+                break;
+            case CONFIG.Coms.PacketCodes.LIDAR:     //When a LIDAR packet is received
+                if (message.length != 17)           //Check that the size of the packet is correct
+                                                    //Currently assumed to be 1 ID byte and 4 bytes for each of the 4 floats
+                {
+                    break;  //@TODO add error handling here
+                }
+                filteredByteArray = removeCode(message);        //Get rid of the identification byte
+                converted = toFloatArray(filteredByteArray);    //Change from bytes to floats so packet can be used
+                float yaw = converted[0];                       //Get the yaw from sent packet
+                float distance = converted[1];                  //Get the distance from sent packet
+                float pitch = converted [3];                    //Get the pitch from sent packet
+                _virtualHornet.L_newLidar(yaw, distance, pitch);//Pass yaw, distance and pitch to the virtual Horent to be
+                                                                //used by it's Lidar panel
                 break;
             default:
                 break;
